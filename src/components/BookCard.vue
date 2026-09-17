@@ -1,5 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { useRoute } from 'vue-router'
+import BookCover from './BookCover.vue'
+
+const route = useRoute()
 
 defineProps({
   book: {
@@ -8,29 +11,28 @@ defineProps({
   },
 })
 
-const coverFailed = ref(false)
 </script>
 
 <template>
   <article class="card h-100 book-card">
-    <div class="book-card__cover">
-      <img
-        v-if="book.cover_url && !coverFailed"
-        :src="book.cover_url"
-        :alt="`Обложка книги «${book.title}»`"
-        loading="lazy"
-        @error="coverFailed = true"
-      />
-      <span v-else class="text-secondary">Обложка недоступна</span>
-    </div>
+    <BookCover :cover-url="book.cover_url" :title="book.title" />
     <div class="card-body">
-      <h2 class="card-title h5">{{ book.title }}</h2>
+      <h2 class="card-title h5">
+        <RouterLink :to="{ name: 'book', params: { id: book.id }, query: route.query }">
+          {{ book.title }}
+        </RouterLink>
+      </h2>
       <p class="card-text mb-2">Год: {{ book.year ?? '—' }}</p>
       <p class="card-text mb-2">ISBN: {{ book.isbn || '—' }}</p>
-      <p class="card-text mb-0">
+      <div class="card-text">
         Авторы:
-        {{ book.authors?.map((author) => author.full_name).join(', ') || '—' }}
-      </p>
+        <template v-if="book.authors?.length">
+          <template v-for="(author, index) in book.authors" :key="author.id">
+            <span v-if="index">, </span><RouterLink :to="{ name: 'author', params: { id: author.id }, query: route.query }">{{ author.full_name }}</RouterLink>
+          </template>
+        </template>
+        <span v-else>—</span>
+      </div>
     </div>
   </article>
 </template>

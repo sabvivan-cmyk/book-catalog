@@ -16,3 +16,14 @@ export async function getBooks({ page = 1, perPage = 20, authorId, year, search 
 
   return result.data
 }
+
+export async function getBook(id) {
+  const response = await api.get(`/books/${id}`)
+  const result = response.data
+
+  if (result?.success !== true || !result.data || typeof result.data !== 'object' || Array.isArray(result.data)) {
+    throw new Error('Некорректный ответ API книги')
+  }
+
+  return result.data
+}

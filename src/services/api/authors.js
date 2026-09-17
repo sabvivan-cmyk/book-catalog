@@ -13,3 +13,14 @@ export async function getAuthors({ page = 1, perPage = 20, search } = {}) {
 
   return result.data
 }
+
+export async function getAuthor(id) {
+  const response = await api.get(`/authors/${id}`)
+  const result = response.data
+
+  if (result?.success !== true || !result.data || typeof result.data !== 'object' || Array.isArray(result.data)) {
+    throw new Error('Некорректный ответ API автора')
+  }
+
+  return result.data
+}

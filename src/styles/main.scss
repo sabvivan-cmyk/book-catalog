@@ -2,7 +2,7 @@ body {
   min-width: 320px;
 }
 
-.book-card__cover {
+.book-cover {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -11,8 +11,17 @@ body {
   background: var(--bs-tertiary-bg);
 }
 
-.book-card__cover img {
+.book-cover img {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.book-cover--detail {
+  height: 420px;
+}
+
+.book-description {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
 }
