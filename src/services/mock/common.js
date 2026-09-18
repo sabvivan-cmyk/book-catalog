@@ -26,3 +26,9 @@ export function notFound(message) {
   }
   return error
 }
+
+export function mockError(status, errors) {
+  const error = new Error(errors[0]?.message || 'Ошибка API')
+  error.response = { status, data: { success: false, errors } }
+  return error
+}

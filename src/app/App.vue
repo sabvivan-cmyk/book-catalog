@@ -15,7 +15,8 @@ function logout() {
   <header class="border-bottom bg-light">
     <nav class="container d-flex flex-wrap align-items-center gap-3 py-3" aria-label="Основная навигация">
       <RouterLink class="fw-semibold text-decoration-none" to="/books">Book Catalog</RouterLink>
-      <RouterLink class="text-decoration-none" to="/books">Книги и авторы</RouterLink>
+      <RouterLink class="text-decoration-none" to="/books">Книги</RouterLink>
+      <RouterLink class="text-decoration-none" to="/authors">Авторы</RouterLink>
       <div class="ms-auto">
         <span v-if="auth.isAuthenticated" class="d-flex align-items-center gap-3">
           <span class="text-secondary">{{ auth.user?.username }}</span>

@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import BooksPage from '../pages/BooksPage.vue'
 import BookPage from '../pages/BookPage.vue'
 import AuthorPage from '../pages/AuthorPage.vue'
+import AuthorsPage from '../pages/AuthorsPage.vue'
+import AuthorEditorPage from '../pages/AuthorEditorPage.vue'
 import LoginPage from '../pages/LoginPage.vue'
 import { useAuthStore } from '../stores/auth'
 
@@ -21,6 +23,23 @@ const router = createRouter({
       path: '/books/:id',
       name: 'book',
       component: BookPage,
+    },
+    {
+      path: '/authors',
+      name: 'authors',
+      component: AuthorsPage,
+    },
+    {
+      path: '/authors/new',
+      name: 'author-create',
+      component: AuthorEditorPage,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/authors/:id/edit',
+      name: 'author-edit',
+      component: AuthorEditorPage,
+      meta: { requiresAuth: true },
     },
     {
       path: '/authors/:id',
