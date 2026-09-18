@@ -1,11 +1,13 @@
 import api from './client'
+import { useMockApi } from './config'
 
 export async function getAuthors({ page = 1, perPage = 20, search } = {}) {
   const params = { page, 'per-page': perPage }
   if (search) params.search = search
 
-  const response = await api.get('/authors', { params })
-  const result = response.data
+  const result = useMockApi
+    ? await import('../mock/authorsApi').then((mock) => mock.getAuthors(params))
+    : (await api.get('/authors', { params })).data
 
   if (result?.success !== true || !Array.isArray(result.data?.items) || !result.data?.pagination) {
     throw new Error('Некорректный ответ API списка авторов')
@@ -15,8 +17,9 @@ export async function getAuthors({ page = 1, perPage = 20, search } = {}) {
 }
 
 export async function getAuthor(id) {
-  const response = await api.get(`/authors/${id}`)
-  const result = response.data
+  const result = useMockApi
+    ? await import('../mock/authorsApi').then((mock) => mock.getAuthor(id))
+    : (await api.get(`/authors/${id}`)).data
 
   if (result?.success !== true || !result.data || typeof result.data !== 'object' || Array.isArray(result.data)) {
     throw new Error('Некорректный ответ API автора')

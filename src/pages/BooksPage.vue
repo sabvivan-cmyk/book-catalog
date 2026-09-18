@@ -7,7 +7,7 @@ import { getAuthors } from '../services/api/authors'
 
 const route = useRoute()
 const router = useRouter()
-const pageSize = 20
+const pageSize = 6
 
 const search = ref('')
 const year = ref('')
