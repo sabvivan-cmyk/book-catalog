@@ -8,6 +8,11 @@ export function hasSubscriptionForAuthor(authorId) {
   return subscriptions.some((item) => item.author_id === Number(authorId))
 }
 
+export function phonesForAuthors(authorIds) {
+  const ids = new Set(authorIds)
+  return [...new Set(subscriptions.filter((item) => ids.has(item.author_id)).map((item) => item.phone))]
+}
+
 export async function createSubscription(authorId, rawPhone) {
   await delay()
   const id = Number(authorId)

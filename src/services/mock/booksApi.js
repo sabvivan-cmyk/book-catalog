@@ -1,6 +1,7 @@
 import { authors, books } from './data'
 import { useAuthStore } from '../../stores/auth'
 import { delay, mockError, notFound, paginate } from './common'
+import { clearNotificationResult, notifySubscribersForBook } from './bookNotifications'
 
 let nextBookId = Math.max(0, ...books.map((book) => book.id)) + 1
 const coverUrls = new Set()
@@ -70,6 +71,7 @@ export async function createBook(formData) {
     authors: authors.filter((author) => authorIds.includes(author.id)),
   }
   books.push(book)
+  await notifySubscribersForBook(book)
   return { success: true, data: book }
 }
 
@@ -112,5 +114,6 @@ export async function deleteBook(id) {
   const index = books.findIndex((item) => item.id === Number(id))
   if (index === -1) throw notFound('Книга не найдена')
   const [book] = books.splice(index, 1)
+  clearNotificationResult(book.id)
   if (coverUrls.delete(book.cover_url)) URL.revokeObjectURL(book.cover_url)
 }

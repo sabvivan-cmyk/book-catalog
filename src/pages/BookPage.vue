@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import BookCover from '../components/BookCover.vue'
 import { deleteBook, getBook } from '../services/api/books'
 import { useAuthStore } from '../stores/auth'
+import { takeMockBookNotification } from '../services/mockBookNotifications'
 
 const route = useRoute()
 const router = useRouter()
@@ -15,6 +16,8 @@ const error = ref(false)
 const deleting = ref(false)
 const deleteError = ref('')
 const needsLogin = ref(false)
+const notificationResult = ref(null)
+const isDevelopment = import.meta.env.DEV
 let requestNumber = 0
 
 function validId(value) {
@@ -29,6 +32,7 @@ async function loadBook() {
   error.value = false
   deleteError.value = ''
   needsLogin.value = false
+  notificationResult.value = null
 
   if (!validId(id)) {
     loading.value = false
@@ -39,7 +43,10 @@ async function loadBook() {
   loading.value = true
   try {
     const data = await getBook(id)
-    if (request === requestNumber) book.value = data
+    if (request !== requestNumber) return
+    book.value = data
+    const notification = await takeMockBookNotification(id)
+    if (request === requestNumber) notificationResult.value = notification
   } catch (caught) {
     if (request !== requestNumber) return
     if (caught.response?.status === 404) notFound.value = true
@@ -87,7 +94,21 @@ watch(() => route.params.id, loadBook, { immediate: true })
       Не удалось загрузить книгу.
       <button class="btn btn-outline-danger btn-sm ms-2" type="button" @click="loadBook">Повторить</button>
     </div>
-    <article v-else-if="book" class="row g-4">
+    <div v-if="!loading && notificationResult" class="alert" :class="notificationResult.failed ? 'alert-warning' : 'alert-success'" role="status">
+      <template v-if="notificationResult.failed && !notificationResult.sent">
+        Книга создана, но SMS-уведомление не удалось эмулировать.
+      </template>
+      <template v-else-if="notificationResult.failed">
+        Книга создана. Эмулировано SMS-уведомлений: {{ notificationResult.sent }}; не удалось: {{ notificationResult.failed }}.
+      </template>
+      <template v-else>
+        Книга создана. Эмулировано SMS-уведомлений: {{ notificationResult.sent }}.
+      </template>
+      <div v-if="notificationResult.failed && isDevelopment && notificationResult.diagnostic" class="small mt-1">
+        {{ notificationResult.diagnostic }}
+      </div>
+    </div>
+    <article v-if="!loading && book" class="row g-4">
       <div class="col-12 col-md-4">
         <BookCover :key="book.id" :cover-url="book.cover_url" :title="book.title" class="book-cover--detail rounded" />
       </div>
