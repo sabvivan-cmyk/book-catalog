@@ -42,3 +42,26 @@ export async function createBook(formData) {
 
   return result.data
 }
+
+export async function updateBook(id, values) {
+  const body = {
+    title: values.title,
+    year: values.year,
+    description: values.description,
+    isbn: values.isbn,
+    author_ids: values.author_ids,
+  }
+  const result = useMockApi
+    ? await import('../mock/booksApi').then((mock) => mock.updateBook(id, body))
+    : (await api.patch(`/books/${id}`, body)).data
+
+  if (result?.success !== true || !Number.isInteger(result.data?.id)) {
+    throw new Error('Некорректный ответ API обновления книги')
+  }
+  return result.data
+}
+
+export async function deleteBook(id) {
+  if (useMockApi) await import('../mock/booksApi').then((mock) => mock.deleteBook(id))
+  else await api.delete(`/books/${id}`)
+}

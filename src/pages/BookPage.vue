@@ -1,14 +1,20 @@
 <script setup>
 import { ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import BookCover from '../components/BookCover.vue'
-import { getBook } from '../services/api/books'
+import { deleteBook, getBook } from '../services/api/books'
+import { useAuthStore } from '../stores/auth'
 
 const route = useRoute()
+const router = useRouter()
+const auth = useAuthStore()
 const book = ref(null)
 const loading = ref(false)
 const notFound = ref(false)
 const error = ref(false)
+const deleting = ref(false)
+const deleteError = ref('')
+const needsLogin = ref(false)
 let requestNumber = 0
 
 function validId(value) {
@@ -21,6 +27,8 @@ async function loadBook() {
   book.value = null
   notFound.value = false
   error.value = false
+  deleteError.value = ''
+  needsLogin.value = false
 
   if (!validId(id)) {
     loading.value = false
@@ -38,6 +46,29 @@ async function loadBook() {
     else error.value = true
   } finally {
     if (request === requestNumber) loading.value = false
+  }
+}
+
+async function removeBook() {
+  if (deleting.value || !book.value || !window.confirm(`Удалить книгу «${book.value.title}»?`)) return
+  deleting.value = true
+  deleteError.value = ''
+  needsLogin.value = false
+  try {
+    await deleteBook(book.value.id)
+    await router.replace({ name: 'books', query: route.query })
+  } catch (caught) {
+    const status = caught.response?.status
+    if (status === 401) {
+      deleteError.value = 'Сессия завершилась. Войдите снова.'
+      needsLogin.value = true
+    } else if (status === 403) deleteError.value = 'Недостаточно прав для удаления книги.'
+    else if (status === 404) {
+      book.value = null
+      notFound.value = true
+    } else deleteError.value = 'Не удалось удалить книгу. Попробуйте ещё раз.'
+  } finally {
+    deleting.value = false
   }
 }
 
@@ -62,6 +93,16 @@ watch(() => route.params.id, loadBook, { immediate: true })
       </div>
       <div class="col-12 col-md-8">
         <h1 class="mb-4">{{ book.title }}</h1>
+        <div v-if="auth.isAuthenticated" class="d-flex flex-wrap gap-2 mb-4">
+          <RouterLink class="btn btn-outline-primary btn-sm" :to="{ name: 'book-edit', params: { id: book.id }, query: route.query }">Редактировать</RouterLink>
+          <button class="btn btn-outline-danger btn-sm" type="button" :disabled="deleting" @click="removeBook">
+            {{ deleting ? 'Удаление…' : 'Удалить' }}
+          </button>
+        </div>
+        <div v-if="deleteError" class="alert alert-danger" role="alert">
+          {{ deleteError }}
+          <RouterLink v-if="needsLogin" :to="{ name: 'login', query: { redirect: route.fullPath } }" class="alert-link">Войти</RouterLink>
+        </div>
         <dl class="row mb-4">
           <dt class="col-sm-3">Год</dt>
           <dd class="col-sm-9">{{ book.year ?? '—' }}</dd>

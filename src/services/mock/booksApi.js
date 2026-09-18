@@ -72,3 +72,45 @@ export async function createBook(formData) {
   books.push(book)
   return { success: true, data: book }
 }
+
+export async function updateBook(id, body) {
+  await delay()
+  if (!useAuthStore().validToken()) throw mockError(401, [{ field: 'auth', message: 'Требуется вход' }])
+  const book = books.find((item) => item.id === Number(id))
+  if (!book) throw notFound('Книга не найдена')
+
+  const errors = []
+  if ('title' in body && (typeof body.title !== 'string' || !body.title.trim())) {
+    errors.push({ field: 'title', message: 'Укажите название книги' })
+  }
+  if ('year' in body && !Number.isSafeInteger(body.year)) {
+    errors.push({ field: 'year', message: 'Укажите целый год выпуска' })
+  }
+  if ('description' in body && typeof body.description !== 'string') {
+    errors.push({ field: 'description', message: 'Описание должно быть строкой' })
+  }
+  if ('isbn' in body && typeof body.isbn !== 'string') {
+    errors.push({ field: 'isbn', message: 'ISBN должен быть строкой' })
+  }
+  if ('author_ids' in body && (!Array.isArray(body.author_ids) || !body.author_ids.length ||
+    body.author_ids.some((authorId) => !Number.isSafeInteger(authorId) || !authors.some((author) => author.id === authorId)))) {
+    errors.push({ field: 'author_ids', message: 'Выберите автора из списка' })
+  }
+  if (errors.length) throw mockError(422, errors)
+
+  if ('title' in body) book.title = body.title.trim()
+  if ('year' in body) book.year = body.year
+  if ('description' in body) book.description = body.description
+  if ('isbn' in body) book.isbn = body.isbn
+  if ('author_ids' in body) book.authors = authors.filter((author) => body.author_ids.includes(author.id))
+  return { success: true, data: book }
+}
+
+export async function deleteBook(id) {
+  await delay()
+  if (!useAuthStore().validToken()) throw mockError(401, [{ field: 'auth', message: 'Требуется вход' }])
+  const index = books.findIndex((item) => item.id === Number(id))
+  if (index === -1) throw notFound('Книга не найдена')
+  const [book] = books.splice(index, 1)
+  if (coverUrls.delete(book.cover_url)) URL.revokeObjectURL(book.cover_url)
+}
