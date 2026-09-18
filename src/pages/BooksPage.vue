@@ -191,7 +191,7 @@ onMounted(loadAuthors)
           <BookCard :book="book" />
         </div>
       </div>
-      <nav v-if="totalPages > 1" class="d-flex align-items-center justify-content-center gap-3 mt-4" aria-label="Страницы каталога">
+      <nav v-if="totalPages > 1" class="d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4" aria-label="Страницы каталога">
         <button class="btn btn-outline-primary" type="button" :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">
           Назад
         </button>

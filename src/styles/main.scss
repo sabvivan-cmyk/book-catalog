@@ -26,6 +26,13 @@ body {
   overflow-wrap: anywhere;
 }
 
+h1,
+.book-card .card-title,
+.book-card .card-text,
+.list-group-item > a {
+  overflow-wrap: anywhere;
+}
+
 .author-name {
   overflow-wrap: anywhere;
 }

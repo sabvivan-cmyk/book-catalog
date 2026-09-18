@@ -130,7 +130,7 @@ watch(() => route.fullPath, () => {
             </span>
           </li>
         </ul>
-        <nav v-if="totalPages > 1" class="d-flex align-items-center justify-content-center gap-3 mt-4" aria-label="Страницы авторов">
+        <nav v-if="totalPages > 1" class="d-flex flex-wrap align-items-center justify-content-center gap-3 mt-4" aria-label="Страницы авторов">
           <button class="btn btn-outline-primary" type="button" :disabled="currentPage <= 1" @click="goToPage(currentPage - 1)">Назад</button>
           <span>Страница {{ currentPage }} из {{ totalPages }}</span>
           <button class="btn btn-outline-primary" type="button" :disabled="currentPage >= totalPages" @click="goToPage(currentPage + 1)">Вперёд</button>

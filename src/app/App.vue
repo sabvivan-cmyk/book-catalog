@@ -14,7 +14,6 @@ function logout() {
 <template>
   <header class="border-bottom bg-light">
     <nav class="container d-flex flex-wrap align-items-center gap-3 py-3" aria-label="Основная навигация">
-      <RouterLink class="fw-semibold text-decoration-none" to="/books">Book Catalog</RouterLink>
       <RouterLink class="text-decoration-none" to="/books">Книги</RouterLink>
       <RouterLink class="text-decoration-none" to="/authors">Авторы</RouterLink>
       <RouterLink class="text-decoration-none" to="/reports/top-authors">ТОП авторов</RouterLink>

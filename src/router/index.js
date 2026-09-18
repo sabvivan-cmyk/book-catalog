@@ -7,6 +7,7 @@ import AuthorsPage from '../pages/AuthorsPage.vue'
 import AuthorEditorPage from '../pages/AuthorEditorPage.vue'
 import LoginPage from '../pages/LoginPage.vue'
 import TopAuthorsPage from '../pages/TopAuthorsPage.vue'
+import NotFoundPage from '../pages/NotFoundPage.vue'
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -69,6 +70,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginPage,
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: NotFoundPage,
     },
   ],
 })

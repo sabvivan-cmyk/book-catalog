@@ -73,7 +73,7 @@ watch(() => route.query.year, (value) => {
       <div class="row g-3 align-items-end">
         <div class="col-12 col-sm-5 col-md-3">
           <label for="report-year" class="form-label">Год выпуска книг</label>
-          <input id="report-year" v-model="yearInput" class="form-control" :class="{ 'is-invalid': validationError }" type="number" step="1" name="year" required />
+          <input id="report-year" v-model="yearInput" class="form-control" :class="{ 'is-invalid': validationError }" type="number" step="1" name="year" required :aria-invalid="Boolean(validationError)" />
           <div v-if="validationError" class="invalid-feedback">{{ validationError }}</div>
         </div>
         <div class="col-12 col-sm-auto">
