@@ -17,6 +17,7 @@ function logout() {
       <RouterLink class="fw-semibold text-decoration-none" to="/books">Book Catalog</RouterLink>
       <RouterLink class="text-decoration-none" to="/books">Книги</RouterLink>
       <RouterLink class="text-decoration-none" to="/authors">Авторы</RouterLink>
+      <RouterLink class="text-decoration-none" to="/reports/top-authors">ТОП авторов</RouterLink>
       <div class="ms-auto">
         <span v-if="auth.isAuthenticated" class="d-flex align-items-center gap-3">
           <span class="text-secondary">{{ auth.user?.username }}</span>

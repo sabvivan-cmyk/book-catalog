@@ -6,6 +6,7 @@ import AuthorPage from '../pages/AuthorPage.vue'
 import AuthorsPage from '../pages/AuthorsPage.vue'
 import AuthorEditorPage from '../pages/AuthorEditorPage.vue'
 import LoginPage from '../pages/LoginPage.vue'
+import TopAuthorsPage from '../pages/TopAuthorsPage.vue'
 import { useAuthStore } from '../stores/auth'
 
 const router = createRouter({
@@ -58,6 +59,11 @@ const router = createRouter({
       path: '/authors/:id',
       name: 'author',
       component: AuthorPage,
+    },
+    {
+      path: '/reports/top-authors',
+      name: 'top-authors',
+      component: TopAuthorsPage,
     },
     {
       path: '/login',
