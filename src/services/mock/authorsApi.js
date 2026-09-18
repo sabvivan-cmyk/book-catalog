@@ -1,6 +1,7 @@
 import { authors, books } from './data'
 import { useAuthStore } from '../../stores/auth'
 import { delay, mockError, notFound, paginate } from './common'
+import { removeSubscriptionsForAuthor } from './subscriptionsApi'
 
 let nextAuthorId = Math.max(0, ...authors.map((author) => author.id)) + 1
 
@@ -69,6 +70,7 @@ export async function deleteAuthor(id) {
   const index = authors.findIndex((item) => item.id === Number(id))
   if (index === -1) throw notFound('Автор не найден')
   const [removed] = authors.splice(index, 1)
+  removeSubscriptionsForAuthor(removed.id)
   for (const book of books) {
     const authorIndex = book.authors.findIndex((item) => item.id === removed.id)
     if (authorIndex !== -1) book.authors.splice(authorIndex, 1)
