@@ -4,9 +4,11 @@ import { useRoute, useRouter } from 'vue-router'
 import BookCard from '../components/BookCard.vue'
 import { getBooks } from '../services/api/books'
 import { getAuthors } from '../services/api/authors'
+import { useAuthStore } from '../stores/auth'
 
 const route = useRoute()
 const router = useRouter()
+const auth = useAuthStore()
 const pageSize = 6
 
 const search = ref('')
@@ -138,7 +140,10 @@ onMounted(loadAuthors)
 
 <template>
   <main class="container py-4 py-md-5">
-    <h1 class="mb-4">Book Catalog</h1>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+      <h1 class="mb-0">Book Catalog</h1>
+      <RouterLink v-if="auth.isAuthenticated" class="btn btn-primary" :to="{ name: 'book-create', query: route.query }">Добавить книгу</RouterLink>
+    </div>
 
     <form class="card card-body mb-4" @submit.prevent="applyFilters">
       <div class="row g-3 align-items-end">

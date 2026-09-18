@@ -33,3 +33,19 @@ body {
 .author-form {
   max-width: 600px;
 }
+
+.book-form {
+  max-width: 720px;
+}
+
+.book-author-options {
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.book-cover-preview {
+  display: block;
+  max-width: 160px;
+  max-height: 220px;
+  object-fit: contain;
+}

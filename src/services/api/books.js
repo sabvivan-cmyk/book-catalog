@@ -30,3 +30,15 @@ export async function getBook(id) {
 
   return result.data
 }
+
+export async function createBook(formData) {
+  const result = useMockApi
+    ? await import('../mock/booksApi').then((mock) => mock.createBook(formData))
+    : (await api.post('/books', formData)).data
+
+  if (result?.success !== true || !Number.isInteger(result.data?.id)) {
+    throw new Error('Некорректный ответ API создания книги')
+  }
+
+  return result.data
+}
